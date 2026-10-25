@@ -1,0 +1,279 @@
+html
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tundria2 - Profesjonalny Kalkulator Ulepszaczy</title>
+    <style>
+        :root {
+            --bg-main: #0b0b0e;
+            --bg-card: #14141c;
+            --bg-input: #1d1d26;
+            --border-color: #2d2d3d;
+            --accent-cyan: #00d2ff;
+            --accent-green: #2ecc71;
+            --accent-red: #e74c3c;
+            --text-main: #f1f2f6;
+            --text-muted: #8e9297;
+        }
+
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            margin: 0;
+        }
+
+        .calc-wrapper {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        .calc-container { 
+            background-color: var(--bg-card); 
+            padding: 30px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+            border: 1px solid var(--border-color); 
+            position: relative;
+        }
+
+        h2 { 
+            text-align: center; 
+            color: var(--accent-cyan); 
+            margin-top: 0; 
+            font-size: 22px; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            border-bottom: 2px solid var(--border-color); 
+            padding-bottom: 15px; 
+        }
+
+        .input-group { margin-bottom: 18px; position: relative; }
+        label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 13px; font-weight: bold; text-transform: uppercase; }
+        
+        input, select { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); 
+            background-color: var(--bg-input); 
+            color: #fff; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            transition: all 0.2s ease;
+        }
+        
+        input:focus, select:focus { 
+            border-color: var(--accent-cyan); 
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.2);
+            outline: none; 
+        }
+
+        .search-results {
+            position: absolute;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            border-radius: 8px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .search-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-item:hover { background: #252533; color: var(--accent-cyan); }
+
+        .result-box { 
+            margin-top: 20px; 
+            padding: 20px; 
+            border-radius: 8px; 
+            text-align: center; 
+            font-weight: bold; 
+            font-size: 19px; 
+            border: 1px solid transparent; 
+            transition: all 0.3s ease;
+        }
+        
+        .profit { background-color: rgba(46, 204, 113, 0.1); color: var(--accent-green); border-color: rgba(46, 204, 113, 0.4); }
+        .loss { background-color: rgba(231, 76, 60, 0.1); color: var(--accent-red); border-color: rgba(231, 76, 60, 0.4); }
+        
+        .summary-box { 
+            margin-top: 20px; 
+            background: #191924; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            border: 1px solid var(--border-color); 
+        }
+        
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #b5b9c2; }
+        .summary-row:last-child { margin-bottom: 0; }
+        .summary-row strong { color: #fff; }
+        
+        .info-box { 
+            text-align: center; 
+            background: #191924; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            border: 1px solid rgba(0, 210, 255, 0.2); 
+            font-size: 14px; 
+            color: #a29bfe; 
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        .btn-reset:hover { border-color: var(--accent-red); color: var(--accent-red); }
+
+        /* Styl sekcji tabeli zbiorczej */
+        .table-container {
+            width: 100%;
+            max-width: 520px;
+            margin-top: 30px;
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+        .table-container h3 { margin-top: 0; color: #fff; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { color: var(--text-muted); font-weight: bold; }
+        .td-profit { color: var(--accent-green); font-weight: bold; }
+        .td-loss { color: var(--accent-red); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="calc-wrapper">
+    <div class="calc-container">
+        <h2>🔮 Przetwarzanie Kryształów</h2>
+        
+        <div class="info-box">
+            Zasada serwera: <strong style="color: #fff;">25,000 fragmentów</strong> = 1 pełny Kryształ
+        </div>
+
+        <div class="input-group">
+            <label>Przedmiot z ekwipunku (Wpisz lub wybierz):</label>
+            <input type="text" id="itemSearch" placeholder="Wyszukaj przedmiot..." autocomplete="off" onclick="toggleDropdown(true)">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <div class="input-group">
+            <label>Cena rynkowa ulepszacza (Won):</label>
+            <input type="number" id="itemPrice" value="65" step="0.1" min="0" oninput="calculateProfit()">
+        </div>
+        
+        <div class="input-group">
+            <label>Koszt stały u NPC za craft (Won):</label>
+            <input type="number" id="npcCost" value="0" step="0.1" min="0" oninput="calculateProfit()">
+        </div>
+        
+        <div class="input-group">
+            <label>Cena rynkowa gotowego Kryształu (Won):</label>
+            <input type="number" id="crystalPrice" value="240" step="1" min="0" oninput="calculateProfit(); updateOverviewTable();">
+        </div>
+
+        <div class="summary-box">
+            <div class="summary-row"><span>Otrzymasz fragmentów:</span> <strong id="crystalsGainedText">0 szt.</strong></div>
+            <div class="summary-row"><span>Wartość fragmentów w kryształach:</span> <strong id="crystalValueText">0 W</strong></div>
+            <div class="summary-row"><span>Łączny koszt (Przedmiot + NPC):</span> <strong id="totalCostText">0 W</strong></div>
+            <div class="summary-row"><span>Rentowność (ROI):</span> <strong id="roiText">0%</strong></div>
+        </div>
+
+        <div id="result" class="result-box">Obliczanie...</div>
+        
+        <button class="btn-reset" onclick="resetToDefaults()">Resetuj zapisane ceny</button>
+    </div>
+
+    <!-- NOWOŚĆ: Tabela podglądu dla wszystkich przedmiotów -->
+    <div class="table-container">
+        <h3>📊 Maksymalna cena zakupu przy obecnej cenie kryształu</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Przedmiot</th>
+                    <th>Kurs</th>
+                    <th>Wartość fragmentów</th>
+                </tr>
+            </thead>
+            <tbody id="overviewTableBody">
+                <!-- Generowane przez JS -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// Baza danych przedmiotów
+const itemsDatabase = [
+    { id: "rdzen_lodu", name: "Rdzeń Lodu II", rate: 30000 },
+    { id: "rdzen_blyskawicy", name: "Rdzeń Błyskawicy II", rate: 12000 },
+    { id: "rog_duratusa", name: "Róg Duratusa", rate: 8000 },
+    { id: "zlota_luska", name: "Złota Łuska Smoka", rate: 5000 },
+    { id: "szkat_sfinks", name: "Szkat. Mityczny Sfinks", rate: 600 },
+    { id: "szkat_smok", name: "Szkat. Złocisty Smok", rate: 400 }
+];
+
+let currentItem = itemsDatabase[2]; // Domyślnie Róg Duratusa
+
+function init() {
+    loadSavedPrices();
+    buildDropdown();
+    selectItem(currentItem.id);
+    
+    // Zamknięcie wyszukiwarki przy kliknięciu poza nią
+    document.addEventListener('click', function(e) {
+        if (!document.getElementById('itemSearch').contains(e.target) && !document.getElementById('searchResults').contains(e.target)) {
+            toggleDropdown(false);
+        }
+    });
+
+    // Filtrowanie wyszukiwarki
+    document.getElementById('itemSearch').addEventListener('input', function(e) {
+        buildDropdown(e.target.value);
+        toggleDropdown(true);
+    });
+}
+
+function buildDropdown(filter = "") {
+    const container = document.getElementById('searchResults');
+    container.innerHTML = "";
+    
+    const filtered = itemsDatabase.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()));
+    
+    filtered.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "search-item";
+        div.innerText = `${item.name} (1 : ${item.rate.toLocaleString()})`;
+        div.onclick = () => selectItem(item.id);
+        container.appendChild(div);
+    });
+}
+
+function toggleDropdown(show) {
+    document.getElementById('searchResults').style.display = show ? 'block' : 'none';
